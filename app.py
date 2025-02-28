@@ -7,10 +7,41 @@ from datetime import datetime
 # Configuração da página
 st.set_page_config(page_title="BI Instagram", layout="wide", initial_sidebar_state="expanded")
 
-# Função para carregar dados (simulando carregamento de arquivo)
+# Função para carregar dados
 @st.cache_data
-def carregar_dados():
-    # Simulando dados de arquivo
+def carregar_dados(arquivo=None):
+    if arquivo is not None:
+        try:
+            # Carregar dados do arquivo CSV
+            df = pd.read_csv(arquivo)
+        except Exception as e:
+            st.error(f"Erro ao carregar arquivo: {e}")
+            return carregar_dados_padrao()
+    else:
+        return carregar_dados_padrao()
+    
+    # Adicionar data para ordenação correta
+    meses_num = {
+        "Dezembro": datetime(2023, 12, 1),
+        "Janeiro": datetime(2024, 1, 1),
+        "Fevereiro": datetime(2024, 2, 1),
+        # Adicione mais meses conforme necessário
+    }
+    df["Data"] = df["Mês"].map(meses_num)
+    df = df.sort_values("Data")
+    
+    # Calcular métricas de crescimento
+    df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
+    df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
+    df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
+    
+    # Taxa de engajamento
+    df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
+    
+    return df
+
+def carregar_dados_padrao():
+    # Dados padrão
     dados = {
         "Mês": ["Dezembro", "Janeiro", "Fevereiro"],
         "Contas com Engajamento": [59, 171, 286],
@@ -41,46 +72,19 @@ def carregar_dados():
     
     return df
 
-# Carregar dados
-def carregar_dados(arquivo='dados_instagram.csv'):
-    try:
-        # Carregar dados do arquivo CSV
-        df = pd.read_csv(arquivo)
-        
-        # Adicionar data para ordenação correta
-        meses_num = {
-            "Dezembro": datetime(2023, 12, 1),
-            "Janeiro": datetime(2024, 1, 1),
-            "Fevereiro": datetime(2024, 2, 1),
-            # Adicione mais meses conforme necessário
-        }
-        df["Data"] = df["Mês"].map(meses_num)
-        df = df.sort_values("Data")
-        
-        # Calcular métricas de crescimento
-        df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
-        df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
-        df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
-        
-        # Taxa de engajamento
-        df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
-        
-        return df
-    except Exception as e:
-        st.error(f"Erro ao carregar dados: {e}")
-        # Retornar dados de exemplo caso haja erro
-        return pd.DataFrame({
-            "Mês": ["Dezembro", "Janeiro", "Fevereiro"],
-            "Contas com Engajamento": [59, 171, 286],
-            "Seguidores": [476, 558, 728],
-            "Alcance": [1322, 8778, 10096],
-            "Interações": [125, 345, 587],
-            "Curtidas": [95, 256, 432],
-            "Comentários": [30, 89, 155]
-        })
-# Sidebar
+# Sidebar para upload de arquivo
 with st.sidebar:
     st.title("Filtros")
+    uploaded_file = st.file_uploader("Carregar arquivo CSV", type="csv")
+
+# Carregar dados
+if uploaded_file is not None:
+    df = carregar_dados(uploaded_file)
+else:
+    df = carregar_dados()
+
+# Continuação da sidebar após carregar os dados
+with st.sidebar:
     mes_selecionado = st.selectbox("Selecione um mês", df["Mês"].tolist())
     st.divider()
     st.markdown("### Métricas Disponíveis")
@@ -188,21 +192,8 @@ with col2:
 st.subheader("📌 Dados Detalhados")
 colunas_exibir = ["Mês", "Seguidores", "Alcance", "Contas com Engajamento", 
                  "Taxa de Engajamento", "Interações", "Curtidas", "Comentários"]
-if mes_selecionado == "Todos":
-    st.dataframe(df[colunas_exibir], use_container_width=True)
-else:
-    st.dataframe(df_filtrado[colunas_exibir], use_container_width=True)
+st.dataframe(df_filtrado[colunas_exibir], use_container_width=True)
 
-# Upload do arquivo
-with st.sidebar:
-    uploaded_file = st.file_uploader("Carregar arquivo CSV", type="csv")
-    
-# Carregar dados
-if uploaded_file is not None:
-    df = carregar_dados(uploaded_file)
-else:
-    df = carregar_dados()  # Carrega dados padrão
-    
 # Rodapé
 st.divider()
-st.markdown("Desenvolvido por Eduardo 🚀 | Última atualização: Fevereiro 2024")  
+st.markdown("Desenvolvido por Eduardo 🚀 | Última atualização: Fevereiro 2024")
