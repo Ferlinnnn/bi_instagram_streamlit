@@ -58,19 +58,6 @@ def carregar_dados(arquivo=None):
     
     return df
 
-def carregar_dados_padrao():
-    # Dados padrão
-    dados = {
-        "Mês": ["Dezembro", "Janeiro", "Fevereiro"],
-        "Contas com Engajamento": [59, 171, 286],
-        "Seguidores": [476, 558, 728],
-        "Alcance": [1322, 8778, 10096],
-        "Interações": [125, 345, 587],
-        "Curtidas": [95, 256, 432],
-        "Comentários": [30, 89, 155]
-    }
-    df = pd.DataFrame(dados)
-    
     # Adicionar data para ordenação correta
     meses_num = {
         "Dezembro": datetime(2023, 12, 1),
