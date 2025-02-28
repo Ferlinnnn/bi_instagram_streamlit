@@ -14,6 +14,16 @@ def carregar_dados(arquivo=None):
         try:
             # Carregar dados do arquivo CSV
             df = pd.read_csv(arquivo)
+            
+            # Verificar se as colunas necessárias existem
+            colunas_necessarias = ["Mês", "Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
+            colunas_faltantes = [col for col in colunas_necessarias if col not in df.columns]
+            
+            if colunas_faltantes:
+                st.warning(f"Colunas faltantes no CSV: {', '.join(colunas_faltantes)}")
+                st.info("Usando dados padrão. Certifique-se que seu CSV tem todas as colunas necessárias.")
+                return carregar_dados_padrao()
+                
         except Exception as e:
             st.error(f"Erro ao carregar arquivo: {e}")
             return carregar_dados_padrao()
@@ -25,18 +35,26 @@ def carregar_dados(arquivo=None):
         "Dezembro": datetime(2023, 12, 1),
         "Janeiro": datetime(2024, 1, 1),
         "Fevereiro": datetime(2024, 2, 1),
-        # Adicione mais meses conforme necessário
+        "Março": datetime(2024, 3, 1),
+        "Abril": datetime(2024, 4, 1),
+        "Maio": datetime(2024, 5, 1),
+        "Junho": datetime(2024, 6, 1)
     }
-    df["Data"] = df["Mês"].map(meses_num)
-    df = df.sort_values("Data")
     
-    # Calcular métricas de crescimento
-    df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
-    df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
-    df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
-    
-    # Taxa de engajamento
-    df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
+    try:
+        df["Data"] = df["Mês"].map(meses_num)
+        df = df.sort_values("Data")
+        
+        # Calcular métricas de crescimento
+        df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
+        df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
+        df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
+        
+        # Taxa de engajamento
+        df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
+    except Exception as e:
+        st.error(f"Erro ao processar dados: {e}")
+        return carregar_dados_padrao()
     
     return df
 
@@ -72,10 +90,31 @@ def carregar_dados_padrao():
     
     return df
 
+# Função para baixar arquivo CSV modelo
+def baixar_csv_modelo():
+    df_modelo = pd.DataFrame({
+        "Mês": ["Dezembro", "Janeiro", "Fevereiro"],
+        "Contas com Engajamento": [59, 171, 286],
+        "Seguidores": [476, 558, 728],
+        "Alcance": [1322, 8778, 10096],
+        "Interações": [125, 345, 587],
+        "Curtidas": [95, 256, 432],
+        "Comentários": [30, 89, 155]
+    })
+    return df_modelo.to_csv(index=False).encode('utf-8')
+
 # Sidebar para upload de arquivo
 with st.sidebar:
     st.title("Filtros")
     uploaded_file = st.file_uploader("Carregar arquivo CSV", type="csv")
+    
+    # Adicionar opção para baixar CSV modelo
+    st.download_button(
+        label="📥 Baixar CSV modelo",
+        data=baixar_csv_modelo(),
+        file_name="modelo_instagram_dados.csv",
+        mime="text/csv",
+    )
 
 # Carregar dados
 if uploaded_file is not None:
