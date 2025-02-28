@@ -38,13 +38,13 @@ def carregar_dados(arquivo=None):
         "Março": datetime(2024, 3, 1),
         "Abril": datetime(2024, 4, 1),
         "Maio": datetime(2024, 5, 1),
-        "Junho": datetime(2024, 6, 1)
-        "Julho": datetime(2024, 7, 1)
-        "Agosto": datetime(2024, 8, 1)
-        "Setembro": datetime(2024, 9, 1)
-        "Outubro": datetime(2024, 10, 1)
-        "Novembro": datetime(2024, 11, 1)
-        "Dezembro": datetime(2024, 12, 1)
+        "Junho": datetime(2024, 6, 1),
+        "Julho": datetime(2024, 7, 1),
+        "Agosto": datetime(2024, 8, 1),
+        "Setembro": datetime(2024, 9, 1),
+        "Outubro": datetime(2024, 10, 1),
+        "Novembro": datetime(2024, 11, 1),
+        "Dezembro": datetime(2024, 12, 1),
     }
     
     try:
