@@ -158,15 +158,7 @@ if uploaded_file is not None:
 else:
     df = carregar_dados()
 
-# Função para carregar dados
-@st.cache_data
-def carregar_dados(arquivo=None):
-    if arquivo is not None:
-        try:
-            # Carregar dados do arquivo CSV
-            df = pd.read_csv(arquivo)
-
-# Continuação da sidebar após carregar os dados
+# Continuação da sidebar após carregar os dados (APENAS UM with st.sidebar)
 with st.sidebar:
     mes_selecionado = st.selectbox("Selecione um mês", df["Mês"].tolist())
     st.divider()
