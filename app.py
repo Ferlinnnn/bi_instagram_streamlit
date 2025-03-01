@@ -178,19 +178,9 @@ df_filtrado = df[df["Mês"] == mes_selecionado]
 
 # Função para formatar números grandes
 def formatar_numero(numero):
-    try:
-        # Converter para inteiro para remover casas decimais
-        numero_int = int(numero)
-        # Usar o formatador de string do Python para adicionar separadores de milhar
-        return f"{numero_int:,}".replace(",", ".")
-    except:
-        # Em caso de erro, retornar o número como está
-        return str(numero)
-
-# Forçar conversão de colunas numéricas
-colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
-for col in colunas_numericas:
-    df[col] = pd.to_numeric(df[col], errors='coerce')
+    if numero >= 1000:
+        return f"{numero/1000:.1f}k"
+    return f"{numero}"
         
 # KPIs principais
 st.subheader("📈 Indicadores de Desempenho")
