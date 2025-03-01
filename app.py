@@ -186,6 +186,11 @@ def formatar_numero(numero):
     except:
         # Em caso de erro, retornar o número como está
         return str(numero)
+
+# Forçar conversão de colunas numéricas
+colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
+for col in colunas_numericas:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
         
 # KPIs principais
 st.subheader("📈 Indicadores de Desempenho")
