@@ -166,17 +166,6 @@ def carregar_dados(arquivo=None):
             # Carregar dados do arquivo CSV
             df = pd.read_csv(arquivo)
 
-# Continuação da sidebar após carregar os dados
-with st.sidebar:^
-    mes_selecionado = st.selectbox("Selecione um mês", df["Mês"].tolist())
-    st.divider()
-    st.markdown("### Métricas Disponíveis")
-    st.markdown("- Contas com Engajamento")
-    st.markdown("- Seguidores")
-    st.markdown("- Alcance")
-    st.markdown("- Taxa de Engajamento")
-    st.markdown("- Interações")
-
 # Cabeçalho principal
 st.title("📊 Dashboard Interativo - Naindra Light Design")
 st.markdown("Análise de performance da conta no Instagram")
