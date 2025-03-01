@@ -35,13 +35,13 @@ def carregar_dados(arquivo=None):
 
 def carregar_dados_padrao():
     df_padrao = pd.DataFrame({
-        "Mês": ["Dez/23", "Jan/24", "Fev/24"],
+        "Mês": ["Dez/24", "Jan/25", "Fev/25"],
         "Contas com Engajamento": [59, 171, 286],
         "Seguidores": [476, 558, 728],
         "Alcance": [1322, 8778, 10096],
-        "Interações": [125, 345, 587],
-        "Curtidas": [95, 256, 432],
-        "Comentários": [30, 89, 155]
+        "Interações": [116, 301, 754],
+        "Curtidas": [96, 182, 380],
+        "Comentários": [4, 5, 26]
     })
     return processar_dados(df_padrao)
 
