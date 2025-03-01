@@ -23,35 +23,97 @@ def carregar_dados(arquivo=None):
                 st.warning(f"Colunas faltantes no CSV: {', '.join(colunas_faltantes)}")
                 st.info("Usando dados padrão. Certifique-se que seu CSV tem todas as colunas necessárias.")
                 return carregar_dados_padrao()
+            
+            # Continuar com o processamento se o CSV estiver correto
+            return processar_dados(df)
                 
         except Exception as e:
             st.error(f"Erro ao carregar arquivo: {e}")
             return carregar_dados_padrao()
     else:
         return carregar_dados_padrao()
-    
+
+def carregar_dados_padrao():
+    df_padrao = pd.DataFrame({
+        "Mês": ["Dez/23", "Jan/24", "Fev/24"],
+        "Contas com Engajamento": [59, 171, 286],
+        "Seguidores": [476, 558, 728],
+        "Alcance": [1322, 8778, 10096],
+        "Interações": [125, 345, 587],
+        "Curtidas": [95, 256, 432],
+        "Comentários": [30, 89, 155]
+    })
+    return processar_dados(df_padrao)
+
+def processar_dados(df):
     # Adicionar data para ordenação correta
-    meses_num = {
+    # Mapear nomes de meses para datas reais para ordenação correta
+    meses_mapeamento = {
+        # 2023
+        "Dez/23": datetime(2023, 12, 1),
         "Dezembro": datetime(2023, 12, 1),
+        "Dezembro 2023": datetime(2023, 12, 1),
+        
+        # 2024
+        "Jan/24": datetime(2024, 1, 1),
         "Janeiro": datetime(2024, 1, 1),
+        "Janeiro 2024": datetime(2024, 1, 1),
+        
+        "Fev/24": datetime(2024, 2, 1),
         "Fevereiro": datetime(2024, 2, 1),
+        "Fevereiro 2024": datetime(2024, 2, 1),
+        
+        "Mar/24": datetime(2024, 3, 1),
         "Março": datetime(2024, 3, 1),
+        "Março 2024": datetime(2024, 3, 1),
+        
+        "Abr/24": datetime(2024, 4, 1),
         "Abril": datetime(2024, 4, 1),
+        "Abril 2024": datetime(2024, 4, 1),
+        
+        "Mai/24": datetime(2024, 5, 1),
         "Maio": datetime(2024, 5, 1),
+        "Maio 2024": datetime(2024, 5, 1),
+        
+        "Jun/24": datetime(2024, 6, 1),
         "Junho": datetime(2024, 6, 1),
+        "Junho 2024": datetime(2024, 6, 1),
+        
+        "Jul/24": datetime(2024, 7, 1),
         "Julho": datetime(2024, 7, 1),
+        "Julho 2024": datetime(2024, 7, 1),
+        
+        "Ago/24": datetime(2024, 8, 1),
         "Agosto": datetime(2024, 8, 1),
+        "Agosto 2024": datetime(2024, 8, 1),
+        
+        "Set/24": datetime(2024, 9, 1),
         "Setembro": datetime(2024, 9, 1),
+        "Setembro 2024": datetime(2024, 9, 1),
+        
+        "Out/24": datetime(2024, 10, 1),
         "Outubro": datetime(2024, 10, 1),
+        "Outubro 2024": datetime(2024, 10, 1),
+        
+        "Nov/24": datetime(2024, 11, 1),
         "Novembro": datetime(2024, 11, 1),
-        "Dezembro": datetime(2024, 12, 1),
+        "Novembro 2024": datetime(2024, 11, 1),
+        
+        "Dez/24": datetime(2024, 12, 1),
+        "Dezembro 2024": datetime(2024, 12, 1)
     }
     
     try:
-        df["Data"] = df["Mês"].map(meses_num)
+        # Criar coluna de data para ordenação
+        df["Data"] = df["Mês"].map(meses_mapeamento)
         df = df.sort_values("Data")
         
-        # Calcular métricas de crescimento
+        # Garantir que todas as colunas numéricas sejam do tipo float para evitar erros
+        colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
+        for col in colunas_numericas:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+        
+        # Calcular métricas de crescimento (exceto para o primeiro mês)
         df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
         df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
         df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
@@ -60,33 +122,14 @@ def carregar_dados(arquivo=None):
         df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
     except Exception as e:
         st.error(f"Erro ao processar dados: {e}")
-        return carregar_dados_padrao()
-    
-    return df
-
-    # Adicionar data para ordenação correta
-    meses_num = {
-        "Dezembro": datetime(2023, 12, 1),
-        "Janeiro": datetime(2024, 1, 1),
-        "Fevereiro": datetime(2024, 2, 1)
-    }
-    df["Data"] = df["Mês"].map(meses_num)
-    df = df.sort_values("Data")
-    
-    # Calcular métricas de crescimento
-    df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
-    df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
-    df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
-    
-    # Taxa de engajamento
-    df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
+        return pd.DataFrame()
     
     return df
 
 # Função para baixar arquivo CSV modelo
 def baixar_csv_modelo():
     df_modelo = pd.DataFrame({
-        "Mês": ["Dezembro", "Janeiro", "Fevereiro"],
+        "Mês": ["Dez/23", "Jan/24", "Fev/24"],
         "Contas com Engajamento": [59, 171, 286],
         "Seguidores": [476, 558, 728],
         "Alcance": [1322, 8778, 10096],
@@ -133,33 +176,42 @@ st.markdown("Análise de performance da conta no Instagram")
 # Filtrar dados
 df_filtrado = df[df["Mês"] == mes_selecionado]
 
+# Função para formatar números grandes
+def formatar_numero(numero):
+    if numero >= 10000:
+        return f"{numero:,.0f}".replace(",", ".")
+    return f"{numero:,.0f}".replace(",", ".")
+
 # KPIs principais
 st.subheader("📈 Indicadores de Desempenho")
 col1, col2, col3, col4 = st.columns(4)
 
+# Verificar se é o primeiro mês (não mostrar crescimento)
+primeiro_mes = df.iloc[0]["Mês"]
+
 with col1:
     seguidores_atual = int(df_filtrado["Seguidores"].values[0])
-    if mes_selecionado != "Dezembro":
+    if mes_selecionado != primeiro_mes and not pd.isna(df_filtrado["Crescimento Seguidores"].values[0]):
         crescimento = float(df_filtrado["Crescimento Seguidores"].values[0])
-        st.metric("Seguidores", f"{seguidores_atual}", f"{crescimento:.1f}%")
+        st.metric("Seguidores", formatar_numero(seguidores_atual), f"{crescimento:.1f}%")
     else:
-        st.metric("Seguidores", f"{seguidores_atual}", "")
+        st.metric("Seguidores", formatar_numero(seguidores_atual), "")
 
 with col2:
     alcance_atual = int(df_filtrado["Alcance"].values[0])
-    if mes_selecionado != "Dezembro":
+    if mes_selecionado != primeiro_mes and not pd.isna(df_filtrado["Crescimento Alcance"].values[0]):
         crescimento = float(df_filtrado["Crescimento Alcance"].values[0])
-        st.metric("Alcance", f"{alcance_atual}", f"{crescimento:.1f}%")
+        st.metric("Alcance", formatar_numero(alcance_atual), f"{crescimento:.1f}%")
     else:
-        st.metric("Alcance", f"{alcance_atual}", "")
+        st.metric("Alcance", formatar_numero(alcance_atual), "")
 
 with col3:
     engajamento_atual = int(df_filtrado["Contas com Engajamento"].values[0])
-    if mes_selecionado != "Dezembro":
+    if mes_selecionado != primeiro_mes and not pd.isna(df_filtrado["Crescimento Engajamento"].values[0]):
         crescimento = float(df_filtrado["Crescimento Engajamento"].values[0])
-        st.metric("Contas Engajadas", f"{engajamento_atual}", f"{crescimento:.1f}%")
+        st.metric("Contas Engajadas", formatar_numero(engajamento_atual), f"{crescimento:.1f}%")
     else:
-        st.metric("Contas Engajadas", f"{engajamento_atual}", "")
+        st.metric("Contas Engajadas", formatar_numero(engajamento_atual), "")
 
 with col4:
     taxa_engaj = float(df_filtrado["Taxa de Engajamento"].values[0])
@@ -224,8 +276,8 @@ with col2:
 st.subheader("📌 Dados Detalhados")
 colunas_exibir = ["Mês", "Seguidores", "Alcance", "Contas com Engajamento", 
                  "Taxa de Engajamento", "Interações", "Curtidas", "Comentários"]
-st.dataframe(df_filtrado[colunas_exibir], use_container_width=True)
+st.dataframe(df[colunas_exibir], use_container_width=True)
 
 # Rodapé
 st.divider()
-st.markdown("Desenvolvido por Eduardo 🚀 | Última atualização: Fevereiro 2024")
+st.markdown("Desenvolvido por Eduardo 🚀 | Última atualização: Março 2025")
