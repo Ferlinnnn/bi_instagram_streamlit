@@ -168,6 +168,7 @@ def carregar_dados(arquivo=None):
 
 # Continuação da sidebar após carregar os dados
 with st.sidebar:
+    
     mes_selecionado = st.selectbox("Selecione um mês", df["Mês"].tolist())
     st.divider()
     st.markdown("### Métricas Disponíveis")
