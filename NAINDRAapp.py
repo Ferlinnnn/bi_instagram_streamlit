@@ -165,17 +165,6 @@ def carregar_dados(arquivo=None):
         try:
             # Carregar dados do arquivo CSV
             df = pd.read_csv(arquivo)
-            
-            # Forçar conversão explícita de todas as colunas numéricas
-            colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
-            for col in colunas_numericas:
-                # Primeiro limpar quaisquer pontos de milhar (se existirem)
-                if col in df.columns:
-                    if df[col].dtype == 'object':  # Se for string
-                        df[col] = df[col].str.replace('.', '', regex=False)
-                        df[col] = df[col].str.replace(',', '.', regex=False)
-                    # Depois converter para número
-                    df[col] = pd.to_numeric(df[col], errors='coerce')
 
 # Continuação da sidebar após carregar os dados
 with st.sidebar:
@@ -189,7 +178,7 @@ with st.sidebar:
     st.markdown("- Interações")
 
 # Cabeçalho principal
-st.title("📊 Dashboard Interativo - Instagram")
+st.title("📊 Dashboard Interativo - Naindra Light Design")
 st.markdown("Análise de performance da conta no Instagram")
 
 # Filtrar dados
