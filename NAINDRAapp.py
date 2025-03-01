@@ -167,8 +167,7 @@ def carregar_dados(arquivo=None):
             df = pd.read_csv(arquivo)
 
 # Continuação da sidebar após carregar os dados
-with st.sidebar:
-    
+with st.sidebar:^
     mes_selecionado = st.selectbox("Selecione um mês", df["Mês"].tolist())
     st.divider()
     st.markdown("### Métricas Disponíveis")
