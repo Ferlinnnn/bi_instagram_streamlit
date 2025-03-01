@@ -186,6 +186,7 @@ def formatar_numero(numero):
     except:
         # Em caso de erro, retornar o número como está
         return str(numero)
+        
 # KPIs principais
 st.subheader("📈 Indicadores de Desempenho")
 col1, col2, col3, col4 = st.columns(4)
