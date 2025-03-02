@@ -7,6 +7,10 @@ from datetime import datetime
 # Configuração da página
 st.set_page_config(page_title="BI Instagram", layout="wide", initial_sidebar_state="expanded")
 
+if st.sidebar.button("🔄 Recarregar Dados"):
+    st.cache_data.clear()
+    st.experimental_rerun()
+    
 # Função para carregar dados
 @st.cache_data
 def carregar_dados(arquivo=None):
