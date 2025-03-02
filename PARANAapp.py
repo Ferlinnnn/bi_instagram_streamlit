@@ -41,7 +41,7 @@ def carregar_dados_padrao():
     df_padrao = pd.DataFrame({
         "Mês": ["Dez/24", "Jan/25", "Fev/25"],
         "Contas com Engajamento": [59, 171, 286],
-        "Seguidores": [9052, 9169, 9347],
+        "Seguidores": [9052, 9169, 9350],
         "Alcance": [193936, 86329, 132230],
         "Interações": [646, 491, 1283],
         "Curtidas": [216, 130, 399],
@@ -122,6 +122,7 @@ def processar_dados(df):
         df["Crescimento Seguidores"] = df["Seguidores"].pct_change() * 100
         df["Crescimento Alcance"] = df["Alcance"].pct_change() * 100
         df["Crescimento Engajamento"] = df["Contas com Engajamento"].pct_change() * 100
+        df["Crescimento Visualizações"] = df["Visualizações"].pct_change() * 100
         
         # Taxa de engajamento
         df["Taxa de Engajamento"] = (df["Interações"] / df["Alcance"]) * 100
@@ -228,9 +229,13 @@ with col4:
     taxa_engaj = float(df_filtrado["Taxa de Engajamento"].values[0])
     st.metric("Taxa de Engajamento", f"{taxa_engaj:.2f}%")
 
-with col5:
+with col5:  # <-- Novo KPI para Visualizações
     visualizacoes_atual = int(df_filtrado["Visualizações"].values[0])
-    st.metric("Visualizações", formatar_numero(visualizacoes_atual))
+    if mes_selecionado != primeiro_mes and not pd.isna(df_filtrado["Crescimento Visualizações"].values[0]):
+        crescimento = float(df_filtrado["Crescimento Visualizações"].values[0])
+        st.metric("Visualizações", formatar_numero(visualizacoes_atual), f"{crescimento:.1f}%")
+    else:
+        st.metric("Visualizações", formatar_numero(visualizacoes_atual), "")
 
 # Gráficos de tendência
 st.subheader("📉 Tendências Mensais")
