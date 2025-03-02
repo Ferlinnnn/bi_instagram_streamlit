@@ -140,7 +140,7 @@ def baixar_csv_modelo():
         "Alcance": [193936, 86329, 132230],
         "Interações": [646, 491, 1283],
         "Curtidas": [216, 130, 399],
-        "Comentários": [5, 0, 22]
+        "Comentários": [5, 0, 22],
         "Visualizações": [2500, 3200, 4100]
     })
     return df_modelo.to_csv(index=False).encode('utf-8')
