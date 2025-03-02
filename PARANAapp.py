@@ -20,7 +20,7 @@ def carregar_dados(arquivo=None):
             df = pd.read_csv(arquivo)
             
             # Verificar se as colunas necessárias existem
-            colunas_necessarias = ["Mês", "Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
+            colunas_necessarias = ["Mês", "Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários", "Visualizações"]
             colunas_faltantes = [col for col in colunas_necessarias if col not in df.columns]
             
             if colunas_faltantes:
@@ -114,7 +114,7 @@ def processar_dados(df):
         df = df.sort_values("Data")
         
         # Garantir que todas as colunas numéricas sejam do tipo float para evitar erros
-        colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários", "visualizações"]
+        colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários", "Visualizações"]
         for col in colunas_numericas:
             df[col] = pd.to_numeric(df[col], errors='coerce')
         
