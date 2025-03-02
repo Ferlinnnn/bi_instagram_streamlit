@@ -46,6 +46,7 @@ def carregar_dados_padrao():
         "Interações": [646, 491, 1283],
         "Curtidas": [216, 130, 399],
         "Comentários": [5, 0, 22]
+        "Visualizações": [382379, 257898, 489698]
     })
     return processar_dados(df_padrao)
 
@@ -113,7 +114,7 @@ def processar_dados(df):
         df = df.sort_values("Data")
         
         # Garantir que todas as colunas numéricas sejam do tipo float para evitar erros
-        colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários"]
+        colunas_numericas = ["Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários", "visualizações"]
         for col in colunas_numericas:
             df[col] = pd.to_numeric(df[col], errors='coerce')
         
@@ -140,8 +141,13 @@ def baixar_csv_modelo():
         "Interações": [646, 491, 1283],
         "Curtidas": [216, 130, 399],
         "Comentários": [5, 0, 22]
+        "Visualizações": [2500, 3200, 4100]
     })
     return df_modelo.to_csv(index=False).encode('utf-8')
+
+# Verificar se as colunas necessárias existem
+colunas_necessarias = ["Mês", "Contas com Engajamento", "Seguidores", "Alcance", "Interações", "Curtidas", "Comentários", "Visualizações"]
+
 
 # Sidebar para upload de arquivo
 with st.sidebar:
@@ -172,6 +178,7 @@ with st.sidebar:
     st.markdown("- Alcance")
     st.markdown("- Taxa de Engajamento")
     st.markdown("- Interações")
+    st.markdown("- Visualizações")
     
 # Cabeçalho principal
 st.title("📊 Dashboard Interativo - Elétrica Paraná")
@@ -188,7 +195,7 @@ def formatar_numero(numero):
         
 # KPIs principais
 st.subheader("📈 Indicadores de Desempenho")
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5 = st.columns(5)
 
 # Verificar se é o primeiro mês (não mostrar crescimento)
 primeiro_mes = df.iloc[0]["Mês"]
@@ -220,6 +227,10 @@ with col3:
 with col4:
     taxa_engaj = float(df_filtrado["Taxa de Engajamento"].values[0])
     st.metric("Taxa de Engajamento", f"{taxa_engaj:.2f}%")
+
+with col5:
+    visualizacoes_atual = int(df_filtrado["Visualizações"].values[0])
+    st.metric("Visualizações", formatar_numero(visualizacoes_atual))
 
 # Gráficos de tendência
 st.subheader("📉 Tendências Mensais")
@@ -279,7 +290,7 @@ with col2:
 # Tabela de dados detalhados
 st.subheader("📌 Dados Detalhados")
 colunas_exibir = ["Mês", "Seguidores", "Alcance", "Contas com Engajamento", 
-                 "Taxa de Engajamento", "Interações", "Curtidas", "Comentários"]
+                  "Taxa de Engajamento", "Interações", "Curtidas", "Comentários", "Visualizações"]
 st.dataframe(df[colunas_exibir], use_container_width=True)
 
 # Rodapé
