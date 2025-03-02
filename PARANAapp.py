@@ -9,7 +9,7 @@ st.set_page_config(page_title="BI Instagram", layout="wide", initial_sidebar_sta
 
 if st.sidebar.button("🔄 Recarregar Dados"):
     st.cache_data.clear()
-    st.experimental_rerun()
+    st.rerun()
     
 # Função para carregar dados
 @st.cache_data
