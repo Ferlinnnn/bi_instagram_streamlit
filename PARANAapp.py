@@ -45,7 +45,7 @@ def carregar_dados_padrao():
         "Alcance": [193936, 86329, 132230],
         "Interações": [646, 491, 1283],
         "Curtidas": [216, 130, 399],
-        "Comentários": [5, 0, 22]
+        "Comentários": [5, 0, 22],
         "Visualizações": [382379, 257898, 489698]
     })
     return processar_dados(df_padrao)
