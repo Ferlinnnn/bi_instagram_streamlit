@@ -50,14 +50,14 @@ def verificar_login(username, senha):
     
     return usuario is not None
 
-# Funções de cálculo (mantidas do código anterior)
+# Funções de cálculo
 def calcular_cilindrada(diametro_pistao, curso_virabrequim, num_cilindros):
     raio_pistao = diametro_pistao / 2
     volume_cilindro = math.pi * (raio_pistao ** 2) * curso_virabrequim
     cilindrada_total = (volume_cilindro * num_cilindros) / 1000
     return round(cilindrada_total, 2)
 
-def calcular_rl(diametro_pistao, curso_virabrequim):
+def calcular_rl(diametro_pistao, curso_virabrequim, comprimento_biela):
     raio_pistao = diametro_pistao / 2
     rl = raio_pistao / curso_virabrequim
     return round(rl, 3)
@@ -120,7 +120,7 @@ def pagina_principal():
         st.session_state['username'] = None
         st.rerun()
     
-    # Resto do código de cálculo (mantido igual ao anterior)
+    # Colunas para entrada de dados
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -151,25 +151,28 @@ def pagina_principal():
         )
 
     with col4:  
-    comprimento_biela = st.number_input(
-        "Comprimento da Biela (mm)", 
-        min_value=50.0, 
-        max_value=300.0, 
-        value=140.0, 
-        step=0.1
-    )
+        comprimento_biela = st.number_input(
+            "Comprimento da Biela (mm)", 
+            min_value=50.0, 
+            max_value=300.0, 
+            value=140.0, 
+            step=0.1
+        )
     
     # Botão para calcular
     if st.button("Calcular Cilindrada"):
         # Realizar cálculo
         cilindrada = calcular_cilindrada(diametro_pistao, curso_virabrequim, num_cilindros)
         
-      # Calcular R/L
-rl = calcular_rl(diametro_pistao, curso_virabrequim, comprimento_biela)
+        # Calcular R/L
+        rl = calcular_rl(diametro_pistao, curso_virabrequim, comprimento_biela)
+        
+        # Classificar motor
+        classificacao_motor = classificar_motor_por_rl(rl)
         
         # Exibir resultados
         st.subheader("Resultados")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         
         with col1:
             st.metric(label="Cilindrada Total", value=f"{cilindrada} cc")
@@ -177,8 +180,8 @@ rl = calcular_rl(diametro_pistao, curso_virabrequim, comprimento_biela)
         with col2:
             st.metric(label="Relação R/L", value=rl)
         
-        # Classificação do motor
-        st.markdown(f"**Tipo de Motor:** {classificacao_motor}")
+        with col3:
+            st.metric(label="Tipo de Motor", value=classificacao_motor)
 
 # Lógica principal
 def main():
