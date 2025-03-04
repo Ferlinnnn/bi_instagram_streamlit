@@ -121,7 +121,7 @@ def pagina_principal():
         st.rerun()
     
     # Resto do código de cálculo (mantido igual ao anterior)
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         diametro_pistao = st.number_input(
