@@ -91,7 +91,7 @@ def pagina_login():
             if verificar_login(username, senha):
                 st.session_state['logado'] = True
                 st.session_state['username'] = username
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("Usuário ou senha incorretos")
     
@@ -118,7 +118,7 @@ def pagina_principal():
     if st.sidebar.button("Sair"):
         st.session_state['logado'] = False
         st.session_state['username'] = None
-        st.experimental_rerun()
+        st.rerun()
     
     # Resto do código de cálculo (mantido igual ao anterior)
     col1, col2, col3 = st.columns(3)
