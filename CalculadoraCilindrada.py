@@ -150,14 +150,22 @@ def pagina_principal():
             step=1
         )
 
+    with col4:  
+    comprimento_biela = st.number_input(
+        "Comprimento da Biela (mm)", 
+        min_value=50.0, 
+        max_value=300.0, 
+        value=140.0, 
+        step=0.1
+    )
+    
     # Botão para calcular
     if st.button("Calcular Cilindrada"):
         # Realizar cálculo
         cilindrada = calcular_cilindrada(diametro_pistao, curso_virabrequim, num_cilindros)
         
-        # Calcular R/L
-        rl = calcular_rl(diametro_pistao, curso_virabrequim)
-        classificacao_motor = classificar_motor_por_rl(rl)
+      # Calcular R/L
+rl = calcular_rl(diametro_pistao, curso_virabrequim, comprimento_biela)
         
         # Exibir resultados
         st.subheader("Resultados")
